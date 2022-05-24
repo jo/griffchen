@@ -1,0 +1,13 @@
+{
+  "name": "Griffchen",
+  "short_name": "Griffchen",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color" : "#222" ,
+  "description": "Small app to explore the notes on the fretboard of a three-string guitar.",
+  "icons": [{
+    "src": "griffchen.png",
+    "sizes": "72x72",
+    "type": "image/png"
+  }]
+}
