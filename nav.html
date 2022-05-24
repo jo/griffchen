@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang=en>
+<head>
+  <meta charset=utf-8>
+  <title>Griffchen</title>
+  <meta name=viewport content=width=device-width,initial-scale=1>
+  <style>
+    body {
+      margin: 0;
+      text-align: center;
+      background-color: #222;
+      overflow: hidden;
+    }
+    nav {
+      position: fixed;
+      bottom: 1em;
+      right: 1em;
+      text-align: right;
+    }
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+<nav>
+  <a id=remove-frame title="Add Frame" href=#>-</a>
+  <br>
+  <a id=add-frame title="Remove Frame" href=#>+</a>
+</nav>
+<script>
+  const addFrameLink = document.getElementById('add-frame')
+  addFrameLink.onclick = () => {
+      let frames = parent.document.getElementsByTagName('frame')
+      let frame = frames[0]
+      let frameset = frame.parentNode
+      let newFrame = frame.cloneNode()
+      
+      let sizes = new Array(frames.length)
+      sizes.fill('*')
+      frameset.setAttribute('cols', `${sizes.join(',')},50`)
+
+      frameset.insertBefore(newFrame, frames[frames.length - 1])
+  }
+
+  const removeFrameLink = document.getElementById('remove-frame')
+  removeFrameLink.onclick = () => {
+      let frames = parent.document.getElementsByTagName('frame')
+      if (frames.length === 2) return
+      let frame = frames[frames.length - 2]
+      let frameset = frame.parentNode
+      
+      let sizes = new Array(frames.length - 2)
+      sizes.fill('*')
+      frameset.setAttribute('cols', `${sizes.join(',')},50`)
+      
+      frameset.removeChild(frame)
+  }
+</script>
