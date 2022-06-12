@@ -378,6 +378,7 @@
   const checkDirection = () => {
     if (touchendX < touchstartX) selectPreviousChord()
     if (touchendX > touchstartX) selectNextChord()
+    changeChord()
   }
 
   document.addEventListener('touchstart', e => {
