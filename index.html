@@ -338,7 +338,7 @@
       form.appendChild(li)
   }
   form.appendChild(ul)
-  form.onchange = () => {
+  const changeChord = () => {
       const chord = form.querySelector('input[name="chord"]:checked').value
       const notes = document.getElementsByClassName(`note`)
       for (const n of notes) {
@@ -353,6 +353,7 @@
           }
       }
   }
+  form.onchange = changeChord
 
   const getCurrentChordIndex = () => {
     const current = inputs.find(input => input.checked)
