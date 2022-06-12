@@ -85,7 +85,20 @@
       top: 1em;
       right: 1em;
       color: white;
-      text-align: right;
+      text-align: left;
+    }
+    aside li {
+      list-style-type: none;
+    }
+    aside input {
+      margin-right: 1em;
+    }
+    aside label {
+      color: #ebbc97;
+    }
+    aside input:checked + label {
+      color: white;
+      font-weight: bold;
     }
   </style>
 </head>
@@ -94,12 +107,7 @@
   <div id=griffbrett></div>
 </main>
 <aside>
-  <form id=form>
-    <label>
-      None
-      <input type=radio name=chord value="" checked>
-    </label>
-  </form>
+  <form id=form></form>
 </aside>
 <script>
   const div = document.getElementById('griffbrett')
@@ -301,26 +309,35 @@
   svg.appendChild(notes)
 
   const chords = {
+    'Am': ['A', 'C', 'E'],
     'C': ['C', 'E', 'G'],
     'D': ['D', 'F#', 'A'],
+    'Dm': ['D', 'F', 'A'],
+    'Em': ['E', 'G', 'B'],
+    'F': ['F', 'A', 'C'],
+    'Fm': ['F', 'G#', 'C'],
     'G': ['G', 'B', 'D'],
-    'a': ['A', 'C', 'E'],
-    'd': ['D', 'F', 'A'],
-    'e': ['E', 'G', 'B'],
+    'G7': ['G', 'B', 'D', 'F'],
   }
   const form = document.getElementById('form')
+  const ul = document.createElement('ul')
+  const inputs = []
   for (name in chords) {
-      const br = document.createElement('br')
-      form.appendChild(br)
+      const li = document.createElement('li')
       const label = document.createElement('label')
+      label.setAttribute('for', `chord-input-${name}`)
       label.innerText = name
       const input = document.createElement('input')
+      input.id = `chord-input-${name}`
       input.type = 'radio'
       input.name = 'chord'
       input.value = name
-      label.appendChild(input)
-      form.appendChild(label)
+      inputs.push(input)
+      li.appendChild(input)
+      li.appendChild(label)
+      form.appendChild(li)
   }
+  form.appendChild(ul)
   form.onchange = () => {
       const chord = form.querySelector('input[name="chord"]:checked').value
       const notes = document.getElementsByClassName(`note`)
@@ -336,6 +353,41 @@
           }
       }
   }
+
+  const getCurrentChordIndex = () => {
+    const current = inputs.find(input => input.checked)
+    return inputs.indexOf(current)
+  }
+
+  const selectNextChord = () => {
+    const currentIndex = getCurrentChordIndex()
+    const nextIndex = currentIndex > inputs.length - 2 ? 0 : currentIndex + 1
+    inputs[nextIndex].checked = true
+  }
+
+  const selectPreviousChord = () => {
+    const currentIndex = getCurrentChordIndex()
+    const prevIndex = currentIndex < 1 ? inputs.length - 1 : currentIndex - 1
+    inputs[prevIndex].checked = true
+  }
+
+  let touchstartX = 0
+  let touchendX = 0
+
+  const checkDirection = () => {
+    if (touchendX < touchstartX) selectPreviousChord()
+    if (touchendX > touchstartX) selectNextChord()
+  }
+
+  document.addEventListener('touchstart', e => {
+    touchstartX = e.changedTouches[0].screenX
+  })
+
+  document.addEventListener('touchend', e => {
+    touchendX = e.changedTouches[0].screenX
+    checkDirection()
+  })
+
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('service-worker.js')
   }
