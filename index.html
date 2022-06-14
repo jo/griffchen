@@ -95,6 +95,8 @@
     }
     aside label {
       color: #ebbc97;
+      min-width: 1.75rem;
+      display: inline-block;
     }
     aside input:checked + label {
       color: white;
@@ -369,21 +371,22 @@
     const currentIndex = getCurrentChordIndex()
     const nextIndex = currentIndex > inputs.length - 2 ? 0 : currentIndex + 1
     inputs[nextIndex].checked = true
+    changeChord()
   }
 
   const selectPreviousChord = () => {
     const currentIndex = getCurrentChordIndex()
     const prevIndex = currentIndex < 1 ? inputs.length - 1 : currentIndex - 1
     inputs[prevIndex].checked = true
+    changeChord()
   }
 
   let touchstartX = 0
   let touchendX = 0
 
   const checkDirection = () => {
-    if (touchendX < touchstartX) selectPreviousChord()
     if (touchendX > touchstartX) selectNextChord()
-    changeChord()
+    if (touchendX < touchstartX) selectPreviousChord()
   }
 
   document.addEventListener('touchstart', e => {
@@ -393,6 +396,11 @@
   document.addEventListener('touchend', e => {
     touchendX = e.changedTouches[0].screenX
     checkDirection()
+  })
+
+  document.addEventListener('keydown', e => {
+    if (e.code === 'ArrowRight') selectNextChord()
+    if (e.code === 'ArrowLeft') selectPreviousChord()
   })
 
   if ('serviceWorker' in navigator) {
